@@ -1,7 +1,7 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    require_once __DIR__ . '/vendor/autoload.php';
+    require_once __DIR__ . '../vendor/autoload.php';
 
         $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
@@ -28,12 +28,12 @@
 
     
 
-    require_once('connection.php');
+    require_once('../connection.php');
 
     if(isset($_REQUEST['download_id'])){
         try{
             $id = $_REQUEST['download_id'];
-            $select_stmt = $db->prepare("SELECT * FROM prepare_hours as pre, subject_user as sub, classroom_user as class  WHERE pre.id_prepare = :id AND pre.subject_id = sub.subject_id AND pre.class_id = class.class_id  ");
+            $select_stmt = $db->prepare("SELECT * FROM prepare_to_teach as pre, subject as sub, classroom as class  WHERE pre.id_prepare = :id AND pre.subject_id = sub.subject_id AND pre.class_id = class.class_id  ");
             $select_stmt->bindParam(':id', $id);
             $select_stmt->execute();
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
@@ -75,61 +75,118 @@ background-color: #dddddd;
 </head>
 <body">
     <div class="container">
-    <h1 style="text-align:center">รายละเอียดของข้อมูล</h1>
-
-<table id="bg-table" width="100%" style="border-collapse: collapse;font-size:12pt;margin-top:8px; " border = 2px>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="10%">ชื่อ - สกุล</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php  echo $_SESSION['fname'].' '.$_SESSION['lname']; ?></td>
-    </tr>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;" width="10%">วิชา</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php echo $row['name_subject']; ?></td>
-    </tr>
-    </tr>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;" width="10%">ชั้น</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php echo $row['name_classroom']; ?></td>
-    </tr>
-    </tr>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="10%">วันที่</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php echo $row['date_prepare']; ?></td>
-    </tr>
-    </tr>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="10%">สาระการเรียนรู้/ตัวชี้วัด</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php echo $row['learning']; ?></td>
-    </tr>
-    </tr>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="10%">จุดประสงค์</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php echo $purpose; ?></td>
-    </tr>
-    </tr>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="10%">สอนอย่างไร(กระบวนการจัดการเรียน)</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php echo $how_to_teach; ?></td>
-    </tr>
-    </tr>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="10%">สื่อ/อุปกรณ์การเรียนรู้</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php echo $media; ?></td>
-    </tr>
-    </tr>
-    <tr style="border:1px solid #000;padding:4px;">
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="10%">วิธีวัดและประเมินการสอน/เครื่องมือ</td>
-        <td  style="border-right:1px solid #000;padding:4px;text-align:center;"width="15%"><?php echo $measure; ?></td>
-    </tr>
-
-</thead>
-</table>
-
+    <form method="post" class="form-horizontal mt-5">
+    <div class="form- text-left">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">ชื่อ-นามสกุล</label>
+                    <div class="col-sm-6">
+                        <br>
+                        <input type="text" name="" class="form-control"
+                            value="<?php echo $_SESSION['fname'].' '.$_SESSION['lname']; ?>" readonly />
+                    </div>
+                </div>
             </div>
 
-            <?php 
 
-               $html = ob_get_contents();
+
+
+
+            <div class="form- text-left">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">วิชา</label>
+                    <div class="col-sm-6">
+                        <br>
+                        <input type="text" name="txt_name_role" class="form-control"
+                            value="<?php echo $row['name_subject']; ?>" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form- text-left">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">ชั้น</label>
+                    <div class="col-sm-6">
+                        <br>
+                        <input type="text" name="txt_name_role" class="form-control"
+                            value="<?php echo $row['name_classroom']; ?>" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form- text-left">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">วันที่</label>
+                    <div class="col-sm-6">
+                        <br>
+                        <input type="date" name="txt_name_role" class="form-control"
+                            value="<?php echo $row['date_prepare']; ?>" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form- text">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">สาระการเรียนรู้/ตัวชี้วัด</label>
+                    <div class="col-sm-6">
+                        <br>
+                        <textarea rows="10" cols="55" name="description" class="form-control" required
+                           ><?php echo $row['learning']; ?> </textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form- text-left">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">จุดประสงค์</label>
+                    <div class="col-sm-6">
+                    <br>
+                        <textarea rows="10" cols="55" name="description" class="form-control" required
+                            ><?php echo $purpose; ?> </textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form- text-left">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">สอนอย่างไร(กระบวนการจัดการเรียน)</label>
+                    <div class="col-sm-6">
+                        <textarea rows="10" cols="55" name="description" class="form-control" required
+                           ><?php echo $how_to_teach; ?> </textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form- text-left">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">สื่อ/อุปกรณ์การเรียนรู้</label>
+                    <div class="col-sm-6">
+                    <br>
+                        <textarea rows="10" cols="55" name="description" class="form-control"
+                            required ><?php echo $media; ?> </textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form- text-left">
+                <div class="row">
+                    <label for="name_role" class="col-sm-3 control-label">วิธีวัดและประเมินการสอน/เครื่องมือ</label>
+                    <div class="col-sm-6">
+                    <br>
+                        <textarea rows="10" cols="55" name="description" class="form-control"
+                            required><?php echo $measure; ?> </textarea>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+       
+
+            <?php 
+                $html = ob_get_contents();
                 $mpdf->WriteHTML($html);
                 $mpdf->Output("MyReport_hours.pdf");
                 ob_end_flush();
@@ -141,10 +198,9 @@ background-color: #dddddd;
 
             
     </form>
-
     <form method="post" class="form-horizontal mt-5">
     
-        <div class="form-group text-center">
+        <div class="form-group text-left">
             <div class="col-sm-offset-3 col-sm-9 mt-5">
                 <a href="hours.php" class="btn btn-danger">Cancel</a>
                 <a href="MyReport_hours.pdf" class="btn btn-info">Download</a>

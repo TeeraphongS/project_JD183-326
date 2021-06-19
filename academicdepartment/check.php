@@ -16,7 +16,8 @@
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
 </head>
 <body>
-    <?php include('slide_bar.php'); ?>
+<?php include_once('aca_slidebar.php'); ?>
+    <div class="main">
     <div class="w3-container">
     <div class="display-3 text-center">ตรวจสอบเตรียมสอนรายชั่วโมง</div>
     <table class="table table-striped table-bordered table-hover">
@@ -32,7 +33,7 @@
         </thead>
         <tbody>
             <?php
-                $select_stmt = $db->prepare("SELECT  * FROM prepare_hours");
+                $select_stmt = $db->prepare("SELECT  * FROM prepare_to_teach");
                 $select_stmt->execute();
 
                 while($row = $select_stmt->fetch(PDO::FETCH_ASSOC)){
@@ -43,14 +44,22 @@
                         <td><?php echo date('Y-m-d ',strtotime($row["date_prepare"])) ?></td>
                         <td><a href="view_hours.php?view_id=<?php echo $row['id_prepare']; ?>" class="btn btn-primary">View</td>
                         <td><a href="download_hours.php?download_id=<?php echo $row["id_prepare"]; ?>" class="btn btn-dark">Download</a></td>
-                        <td><a href="confirm.php?confirm_id=<?php echo $row['id_prepare']; ?>" class="btn btn-success" onclick="return confirm('คุณต้องการยืนยันข้อมูลนี้หรือไม่')">Confirm</td>
+                        <td><a href="confirm.php?confirm_id=<?php echo $row['id_prepare']; ?>" class="btn btn-success" 
+                        onclick="return confirm('คุณต้องการยืนยันข้อมูลนี้หรือไม่');">Confirm</td>
                         <td><a href="inconfirm.php?inconfirm_id=<?php echo $row['id_prepare'] ; ?>" class="btn btn-danger" onclick="return confirm('คุณต้องการส่งกลับข้อมูลนี้หรือไม่')">Inconfirm</td>
-                        <td><?php echo $row['status_prepare_hours']; ?></td>
+                        <td><?php if($row['status_prepare_hours']=='Checking'){
+                             echo 'รอการตรวจสอบการส่ง';
+                             }elseif($row['status_prepare_hours'] == 'Incomplete'){
+                                echo 'ไม่ผ่านต้องแก้ไข';
+                            }else{
+                                echo 'ผ่านการตรวจสอบ';
+                            } ?></td>
                     
                     </tr>    
                 <?php } ?>
         </tbody>
     </table>
+    </div>
     </div>
 
     

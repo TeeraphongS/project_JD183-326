@@ -1,7 +1,7 @@
 <?php 
     session_start();
 
-    if (!isset($_SESSION['director_login'])) {
+    if ($_SESSION['login_type'!= 2]) {
         header("location: ../index.php");
     }
 
@@ -36,8 +36,8 @@
             <hr>
         
             <h3>
-                <?php if(isset($_SESSION['director_login'])) { ?>
-                Welcome, <?php echo $_SESSION['director_login']; }?>
+                <?php if(isset($_SESSION['user_login'])) { ?>
+                Welcome, <?php echo $_SESSION['user_login']; }?>
             </h3>
             <a href="../logout.php" class="btn btn-danger">Logout</a>
 

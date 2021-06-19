@@ -2,11 +2,11 @@
 
 session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
+if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
     header("location: ../index.php");
 }
 
-    require_once('connection.php');
+    require_once('../connection.php');
 
     if(isset($_REQUEST['delete_id'])){
         try{
@@ -25,6 +25,6 @@ if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก�
     $update_stmt->bindParam(':id', $id);
     if($update_stmt->execute()){
         $updateMeg = "Record update successfully...";
-        header("refresh:2,choose_a_teaching.php");
+        header("refresh:1,choose_a_teaching.php");
     }
 ?>

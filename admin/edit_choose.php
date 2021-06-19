@@ -3,22 +3,14 @@
 
     
 
-    require_once('connection.php');
+    require_once('../connection.php');
 
-    $query = "SELECT * FROM subject_user";
-    $query1 = "SELECT * FROM classroom_user";
-    $query2 = "SELECT * FROM masterlogin";
-    $query3 = "SELECT * FROM choose_a_teaching";
 
-    $result = mysqli_query($conn,$query);
-    $result1 = mysqli_query($conn,$query1);
-    $result2 = mysqli_query($conn,$query2);
-    $result3 = mysqli_query($conn,$query3);
 
     if(isset($_REQUEST['update_id'])){
         try{
             $id = $_REQUEST['update_id'];
-            $select_stmt = $db->prepare("SELECT * FROM choose_a_teaching as c, masterlogin as m , subject_user as sub, classroom_user as class 
+            $select_stmt = $db->prepare("SELECT * FROM choose_a_teaching as c,login_information as m , subject as sub, classroom as class 
             WHERE c.choose_id = :id and c.master_id = m.master_id and c.subject_id = sub.subject_id and c.class_id = class.class_id");
             $select_stmt->bindParam(':id', $id);
             $select_stmt->execute();
@@ -48,8 +40,8 @@
                     $update_stmt->bindParam(':id', $id);
 
                     if($update_stmt->execute()){
-                        $updateMeg = "Record update successfully...";
-                        header("refresh:2,choose_a_teaching.php");
+                        $updateMeg = "บันทึกข้อมูลการอัพเดตเสร็จสิ้น";
+                        header("refresh:1,choose_a_teaching.php");
                     }
             } catch(PDOException $e){
                 echo $e->getMessage();
@@ -69,6 +61,8 @@
     <link rel="stylesheet" href="bootstrap/bootstrap_button.css">
 </head>
 <body>
+<?php include_once('slidebar_admin.php'); ?>
+    <div class="main">
     <div class="container">
     <div class="display-3 text-center">แก้ไขวิชาการสอน</div>
     </div>
@@ -76,7 +70,7 @@
         if(isset($errorMsg)){
     ?>
         <div class="alert alert-danger">
-        <strong>Wrong! <?php echo $errorMsg; ?></strong>
+        <strong>เกิดข้อผิดพลาด <?php echo $errorMsg; ?></strong>
         </div>
     <?php } ?>
 
@@ -85,7 +79,7 @@
         if(isset($updateMeg)){
     ?>
         <div class="alert alert-success">
-        <strong>success <?php echo $updateMeg; ?></strong>
+        <strong>ดำเนินการเสร็จสิ้น <?php echo $updateMeg; ?></strong>
         </div>
     <?php } ?>
 
@@ -94,21 +88,45 @@
             <div class="row">
             <label for="type" class="col-sm-3 control-label">ชื่อ</label>
             <div class="col-sm-6">
-            <input type="text" name="txt_master_id" class="form-control" value="<?php echo $fname.' '.$lname; ?>" readonly>
+                <select name="txt_name" class="form-control">
+                <option value="" selected="selected"><?php echo $fname .''.$lname; ?></option>
+                <?php 
+                $query = "SELECT * FROM login_information";
+                $result = mysqli_query($conn,$query);//login data
+                ?>
+                <?php
+                ?>
+                <?php foreach($result as $row){
+                    if($row['master_id'] == $row['master_id'] && $row['status_master'] == 'Active' && $row['user_role_id'] == '8' ){?>
+                <option value="<?php echo $row["master_id"]; ?>">
+                <?php echo $row["fname"].' '.$row["lname"]; ?>
+                </option>
+                <?php }else {
+                    # code...
+                } ?>
+                <?php } ?>
+                </select>
             </div>
             </div>
         </div>
 
+       
         <div class="form- text-center">
             <div class="row">
             <label for="type" class="col-sm-3 control-label">รหัสวิชา/วิชา</label>
             <div class="col-sm-6">
                 <select name="txt_code" class="form-control">
-                <option value="" selected="selected"><?php echo $code_subject.' '.$name_subject; ?></option>
-                <?php foreach($result as $row){?>
-                <option value="<?php echo $row["subject_id"]; ?>">
-                <?php echo $row["code_subject"].' '.$row["name_subject"]; ?>
+                <option value="" selected="selected"><?php echo $code_subject.''.$name_subject; ?></option>
+                <?php
+                $query1 = "SELECT * FROM subject"; 
+                $result1 = mysqli_query($conn,$query1);//subject
+                ?>
+                <?php foreach($result1 as $row1){
+                    if($row1['status'] == 'Active'){?>
+                <option value="<?php echo $row1["subject_id"]; ?>">
+                <?php echo $row1["code_subject"].' '.$row1["name_subject"]; ?>
                 </option>
+                <?php } ?>
                 <?php } ?>
                 </select>
             </div>
@@ -120,11 +138,17 @@
             <label for="type" class="col-sm-3 control-label">ห้องเรียน</label>
             <div class="col-sm-6">
                 <select name="txt_classroom" class="form-control">
-                <option value="" selected="selected"><?php echo $name_classroom ?></option>
-                <?php foreach($result1 as $row1){?>
-                <option value="<?php echo $row1["class_id"]; ?>">
-                <?php echo $row1["name_classroom"]; ?>
+                <option value="" selected="selected"><?php echo $name_classroom;?></option>
+                <?php 
+                $query2 = "SELECT * FROM classroom";
+                $result2 = mysqli_query($conn,$query2);//classroom
+                ?>
+                <?php foreach($result2 as $row2){
+                    if($row2['status'] == 'Active'){?>
+                <option value="<?php echo $row2["class_id"]; ?>">
+                <?php echo $row2["name_classroom"]; ?>
                 </option>
+                <?php } ?>
                 <?php } ?>
                 </select>
             </div>
@@ -151,6 +175,7 @@
                 </div>
             </div>
     </form>
+    </div>
 
     
 
