@@ -1,7 +1,7 @@
 <?php 
     session_start();
 
-    if (!isset($_SESSION['academicdepartment_login'])) {
+    if ($_SESSION['login_type'] != 4) {
         header("location: ../index.php");
     }
 
@@ -17,7 +17,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
-    <?php include("slide_bar.php");?>
+<?php include_once('aca_slidebar.php'); ?>
+    <div class="main">
     <div class="text-center mt-5">
         <div class="container">
 
@@ -36,12 +37,13 @@
             <hr>
                 
             <h3>
-                <?php if(isset($_SESSION['academicdepartment_login'])) { ?>
-                Welcome, <?php echo $_SESSION['academicdepartment_login']; }?>
+                <?php if(isset($_SESSION['user_login'])) { ?>
+                Welcome, <?php echo $_SESSION['user_login']; }?>
             </h3>
             <a href="../logout.php" class="btn btn-danger">Logout</a>
 
         </div>
+    </div>
     </div>
     
 </body>

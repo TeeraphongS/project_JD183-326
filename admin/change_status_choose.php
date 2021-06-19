@@ -3,7 +3,7 @@
 session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
 
-    require_once('connection.php');
+    require_once('../connection.php');
 
     if(isset($_REQUEST['change_id'])){
         try{

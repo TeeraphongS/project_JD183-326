@@ -1,18 +1,18 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
     date_default_timezone_set('Asia/Bangkok');
-    require_once('connection.php');
+    require_once('../connection.php');
 
     $id = $_SESSION['master_id'];
 
-    $query2 = "SELECT * FROM subject_user as s,choose_a_teaching as c,classroom_user as class 
+    $query2 = "SELECT * FROM subject as s,choose_a_teaching as c,classroom as class 
     WHERE c.master_id= ".$id." AND c.subject_id = s.subject_id AND c.class_id = class.class_id";//เชื่อม2ตาราง
     $result2 = mysqli_query($conn,$query2);
 
     if(isset($_REQUEST['btn_insert'])){
         $fname_lname =$_REQUEST['txt_fname_lname'] ;
         $subject = $_REQUEST['txt_subject_id'];
-        $date = $_REQUEST['txt_date_prepare_week'];
+        $date = $_REQUEST['txt_date'];
         $goal = $_REQUEST['txt_goal'];
         $result = $_REQUEST['txt_result'];
         $activity_good = $_REQUEST['txt_activity_good'];
@@ -39,8 +39,8 @@
         }else {
             try{
                 if(!isset($errorMsg)){
-                    $insert_stmt = $db->prepare("INSERT INTO prepare_week(fname_lname,date_prepare_week,subject_id,goal,result,activity_good,activity_nogood,problem,student,solve_the_problem)
-                     VALUE('".$fname_lname."', '".$subject."', '".$date."', '".$goal."', '".$result."', '".$activity_good."', '".$activity_nogood."', '".$problem."', '".$student."', '".$solve_the_problem."')");
+                    $insert_stmt = $db->prepare("INSERT INTO weekly_summary(master_id,date_prepare_week,subject_id,goal,result,activity_good,activity_nogood,problem,student,solve_the_problem)
+                     VALUE('".$fname_lname."', '".$date."', '".$subject."', '".$goal."', '".$result."', '".$activity_good."', '".$activity_nogood."', '".$problem."', '".$student."', '".$solve_the_problem."')");
 
                     if($insert_stmt->execute()){
                         $insertMsg = "Insert Successfully...";
@@ -64,19 +64,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script language="JavaScript">
+    $(function() {
+        var dates = $("#datepicker").datepicker({
+            defaultDate: "+1w",
+            changeMonth: true,
+            minDate: 0,
+            maxDate: 0
+        });
+    });
+    </script>
+
 </head>
 <body>
-<div class="w3-sidebar w3-black w3-bar-block" style="width:20%">
-  <a href="teacher_home.php"><h3 class="w3-bar-item">Home</h3></a>
-  <a href="hours.php" class="w3-bar-item w3-button">กรอกเตรียมสอนรายชั่วโมง</a>
-  <a href="week.php" class="w3-bar-item w3-button">กรอกจุดประสงค์รายสัปดาห์</a>
-  <a href="../logout.php" class="w3-bar-item w3-button">Logout</a>
-</div>
-<div style="margin-left:20%">
-
-<div class="w3-container w3-teal">
-</div>
-    <div class="w3-container">
+<?php include_once('slidebar_teacher.php'); ?>
+    <div class="main">
+    <div class="container">
     <div class="display-3 text-center">สรุปรายสัปดาห์</div>
     </div>
     <?php
@@ -113,7 +119,8 @@
                 <div class="row">
                 <label for="name_classroom" class="col-sm-3 control-label">วันที่รายงานผล</label>
                 <div class="col-sm-6">
-                    <input type="date" name="txt_date_prepare_week" class="form-control" placeholder="วันที่รายงานผล ...">
+                <input type="text" name="txt_date" id="datepicker" class="form-control"
+                            placeholder="เดือน/วัน/ปี">
                 </div>
                 </div>
             </div>
@@ -225,7 +232,7 @@
                 </div>
             </div>
     </form>
-
+</div>
     
 
 

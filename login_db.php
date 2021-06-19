@@ -24,7 +24,7 @@
             $errorMsg[] = "Please select role";
         } else if ($username AND $password AND $role) {
             try {
-                $select_stmt = $db->prepare("SELECT username, password, user_role_id,status_master,fname,lname,master_id FROM masterlogin WHERE username = :uusername AND password = :upassword AND user_role_id = :urole");
+                $select_stmt = $db->prepare("SELECT username, password, user_role_id,status_master,fname,lname,master_id FROM login_information WHERE username = :uusername AND password = :upassword AND user_role_id = :urole");
                 $select_stmt->bindParam(":uusername", $username);
                 $select_stmt->bindParam(":upassword", $password);
                 $select_stmt->bindParam(":urole", $role);
@@ -49,28 +49,33 @@
                         if ($username == $dbusername AND $password == $dbpassword AND $role == $dbrole AND $dbstatus == 'Active' AND $fname = $dbfname AND $lname = $dblname AND $id = $dbid)  {
                             switch($dbrole) {
                                 case '1':
-                                    $_SESSION['admin_login'] = $username;
-                                    $_SESSION['success'] = "Admin... Successfully Login...";
+                                    $_SESSION['login_type'] = 1;
+                                    $_SESSION['user_login'] = $username;
+                                    $_SESSION['success'] = "ยินดีต้อนรับผู้ดูแลระบบ";
                                     header("location: admin/admin_home.php");
                                 break;
                                 case '2':
-                                    $_SESSION['director_login'] = $username;
+                                    $_SESSION['login_type'] = 2;
+                                    $_SESSION['user_login'] = $username;
                                     $_SESSION['success'] = "Director... Successfully Login...";
                                     header("location: director/director_home.php");
                                 break;
                                 case '3':
-                                    $_SESSION['deputydirector_login'] = $username;
+                                    $_SESSION['login_type'] = 3;
+                                    $_SESSION['user_login'] = $username;
                                     $_SESSION['success'] = "Deputy Director... Successfully Login...";
                                     header("location: deputydirector/deputydirector_home.php");
                                 break;
                                 case '4':
-                                    $_SESSION['academicdepartment_login'] = $username;
+                                    $_SESSION['login_type'] = 4;
+                                    $_SESSION['user_login'] = $username;
                                     $_SESSION['success'] = "Academic Department... Successfully Login...";
                                     header("location: academicdepartment/academicdepartment_home.php");
                                 break;
                                 case '5':
-                                    
-                                    $_SESSION['teacher_login'] = $username;
+
+                                    $_SESSION['login_type'] = 5;
+                                    $_SESSION['user_login'] = $username;
                                     $_SESSION['fname'] = $fname;
                                     $_SESSION['lname'] = $lname;
                                     $_SESSION['master_id'] = $id;
@@ -78,15 +83,15 @@
                                     header("location: teacher/teacher_home.php");
                                 break;
                                 default:
-                                    $_SESSION['error'] = "Wrong username or password or role";
+                                    $_SESSION['error'] = "กรุณาตรวจสอบบัญชีผู้ใช้ รหัสผ่าน หรือบทบาทใหม่อีกครั้ง";
                                     header("location: index.php");
                             }
                         }else{
-                            $_SESSION['error'] = "Wrong username or password or role";
+                            $_SESSION['error'] = "กรุณาตรวจสอบบัญชีผู้ใช้ รหัสผ่าน หรือบทบาทใหม่อีกครั้ง";
                         header("location: index.php");
                         }
                     } else {
-                        $_SESSION['error'] = "Wrong username or password or role";
+                        $_SESSION['error'] = "กรุณาตรวจสอบบัญชีผู้ใช้ รหัสผ่าน หรือบทบาทใหม่อีกครั้ง";
                         header("location: index.php");
                     }
                 }

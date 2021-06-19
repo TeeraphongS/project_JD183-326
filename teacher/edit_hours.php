@@ -3,7 +3,7 @@
 
     
 
-    require_once('connection.php');
+    require_once('../connection.php');
     $id1 = $_SESSION['master_id'];
     //$query2 = "SELECT * FROM subject_user as s,choose_a_teaching as c,classroom_user as class, prepare_hours as pre WHERE c.master_id= ".$id." AND c.subject_id = s.subject_id AND c.class_id = class.class_id AND pre.subject_id = s.subject_id";//เชื่อม2ตาราง
     //$result2 = mysqli_query($conn,$query2); 
@@ -11,7 +11,7 @@
     if(isset($_REQUEST['update_id'])){
         try{
             $id = $_REQUEST['update_id'];
-            $select_stmt = $db->prepare("SELECT * FROM prepare_hours as pre , subject_user as sub , classroom_user as class WHERE pre.id_prepare = :id AND pre.subject_id = sub.subject_id AND pre.class_id = class.class_id");
+            $select_stmt = $db->prepare("SELECT * FROM prepare_to_teach as pre , subject as sub , classroom as class WHERE pre.id_prepare = :id AND pre.subject_id = sub.subject_id AND pre.class_id = class.class_id");
             $select_stmt->bindParam(':id', $id);
             $select_stmt->execute();
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
@@ -29,7 +29,7 @@
         $measure_up =$_REQUEST['txt_measure'];
        // echo 'update ='.$id = $_REQUEST['update_id'] .'<br>';
         $date_prepare = $_REQUEST['txt_date'];
-        $status = "1";
+        $status = "Checking";
         
         
 
@@ -50,17 +50,17 @@
         }else{
             try{
                 if(!isset($errorMsg)){echo 'bf';
-                    $update_stmt = $db->prepare("UPDATE prepare_hours 
+                    $update_stmt = $db->prepare("UPDATE prepare_to_teach 
                    SET  subject_id='".$subject_up."', class_id='".$classroom_up."', date_prepare ='".$date_prepare."'
                    , learning='".$learn_up."',purpose='".$purpose_up."',how_to_teach='".$how_to_teach_up."',media='".$media_up."',measure='".$measure_up."',status_prepare_hours='".$status."' 
                    WHERE id_prepare = '".$id."'");
                 }
 
-                    if($update_stmt->execute()){echo 'CC';
+                    if($update_stmt->execute()){
                         $updateMeg = "Record update successfully...";
                         header("refresh:2,hours.php");
                     }
-            } catch(PDOException $e){echo 'aaa';
+            } catch(PDOException $e){
                 echo $e->getMessage();
             }
         }
@@ -79,6 +79,8 @@
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
 </head>
 <body>
+<?php include_once('slidebar_teacher.php'); ?>
+    <div class="main">
     <div class="container">
     <div class="display-3 text-center">Edit Page</div>
     </div>
@@ -118,7 +120,7 @@
                 <div class="col-sm-6">
                     <select name="txt_subject_id" class="form-control">
                     <?php //foreach($result2 as $row2){?>
-                    <?php $query = ("SELECT * FROM choose_a_teaching as c, subject_user as sub WHERE c.master_id = ".$id1. " AND c.subject_id = sub.subject_id");
+                    <?php $query = ("SELECT * FROM choose_a_teaching as c, subject as sub WHERE c.master_id = ".$id1. " AND c.subject_id = sub.subject_id");
                         $result2 =mysqli_query($conn,$query);
                         
                      ?>
@@ -144,7 +146,7 @@
                 <label for="name_subject" class="col-sm-3 control-label">ห้องที่สอน</label>
                 <div class="col-sm-6">
                     <select name="txt_class" class="form-control">
-                    <?php $query2 = ("SELECT * FROM choose_a_teaching as c, classroom_user as class WHERE c.master_id = ".$id1. " AND c.class_id = class.class_id");
+                    <?php $query2 = ("SELECT * FROM choose_a_teaching as c, classroom as class WHERE c.master_id = ".$id1. " AND c.class_id = class.class_id");
                     $result3 =mysqli_query($conn,$query2);
                      ?>
                     <?php foreach($result3 as $row3){
@@ -178,7 +180,8 @@
                 <div class="row">
                 <label for="name_role" class="col-sm-3 control-label">Learning</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_learn" class="form-control" value="<?php echo $row['learning']; ?>">
+                <textarea rows="10" cols="55" name="description" class="form-control" required>
+                <?php echo $row['learning']; ?> </textarea>
                 </div>
                 </div>
             </div>
@@ -187,7 +190,8 @@
                 <div class="row">
                 <label for="name_role" class="col-sm-3 control-label">Purpose</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_pur" class="form-control" value="<?php echo $row['purpose']; ?>">
+                <textarea rows="10" cols="55" name="description" class="form-control" required>
+                <?php echo $purpose; ?> </textarea>
                 </div>
                 </div>
             </div>
@@ -196,25 +200,28 @@
                 <div class="row">
                 <label for="name_role" class="col-sm-3 control-label">สอนอย่างไร</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_how" class="form-control" value="<?php echo $row['how_to_teach']; ?>">
+                <textarea rows="10" cols="55" name="description" class="form-control" required>
+                <?php echo $how_to_teach; ?> </textarea>
                 </div>
                 </div>
             </div>
 
             <div class="form- text-center">
                 <div class="row">
-                <label for="name_role" class="col-sm-3 control-label">สื่อ</label>
+                <label for="name_role" class="col-sm-3 control-label">สื่อ/อุปกรณ์การเรียนรู้</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_media" class="form-control" value="<?php echo $row['media']; ?>">
+                <textarea rows="10" cols="55" name="description" class="form-control"
+                            required><?php echo $media; ?> </textarea>
                 </div>
                 </div>
             </div>
 
             <div class="form- text-center">
                 <div class="row">
-                <label for="name_role" class="col-sm-3 control-label">เครื่องมือ</label>
+                <label for="name_role" class="col-sm-3 control-label">วิธีวัดและประเมินการสอน/เครื่องมือ</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_measure" class="form-control" value="<?php echo $row['measure']; ?>">
+                <textarea rows="10" cols="55" name="description" class="form-control"
+                            required><?php echo $measure; ?> </textarea>
                 </div>
                 </div>
             </div>
@@ -229,7 +236,7 @@
             </div>
 
     </form>
-
+</div>
     
 
 

@@ -1,10 +1,10 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
         header("location: ../index.php");
     }
-    require_once('connection.php');
+    require_once('../connection.php');
 
     if(isset($_REQUEST['btn_insert'])){
         $firstname = $_REQUEST['txt_firstname'];
@@ -15,21 +15,21 @@
         $role = $_REQUEST['txt_role'];
 
         if(empty($firstname)){
-            $errorMsg = "Please enter Firstname";
+            $errorMsg = "กรุณากรอกชื่อ";
         }else if(empty($lastname)){
-            $errorMsg = "Please enter Lastname";
+            $errorMsg = "กรุณากรอกนามสกุล";
         }else if(empty($username)){
-            $errorMsg = "Please enter username";
+            $errorMsg = "กรุณากรอกชื่อบัญชีผู้ใช้";
         }else if(empty($password)){
-            $errorMsg = "Please enter password";
+            $errorMsg = "กรุณากรอกรหัสผ่าน";
         }else if(empty($email)){
-            $errorMsg = "Please enter email";
+            $errorMsg = "กรุณากรอกอีเมลล์";
         }else if(empty($role)){
-            $errorMsg = "Please enter role";
+            $errorMsg = "กรุณาระบุบทบาท";
         }else {
             try{
                 if(!isset($errorMsg)){
-                    $insert_stmt = $db->prepare("INSERT INTO masterlogin(fname,lname,username,password,email,user_role_id) VALUE(:fname,:lname,:user,:pass,:email,:role) ");
+                    $insert_stmt = $db->prepare("INSERT INTO login_information(fname,lname,username,password,email,user_role_id) VALUE(:fname,:lname,:user,:pass,:email,:role) ");
                     $insert_stmt->bindParam(":fname", $firstname);
                     $insert_stmt->bindParam(":lname", $lastname);
                     $insert_stmt->bindParam(":user", $username);
@@ -38,8 +38,8 @@
                     $insert_stmt->bindParam(":role", $role);
 
                     if($insert_stmt->execute()){
-                        $insertMsg = "Insert Successfully...";
-                        header("refresh:2,index.php");
+                        $insertMsg = "เพิ่มข้อมูลของสมาชิกเสร็จสิ้น";
+                        header("refresh:1,index.php");
                     }
                 }
             } catch (PDOException $e){
@@ -58,14 +58,16 @@
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
 </head>
 <body>
+<?php include_once('slidebar_admin.php'); ?>
+    <div class="main">
     <div class="container">
-    <div class="display-3 text-center">Add+</div>
+    <div class="display-3 text-center">เพิ่มสมาชิก</div>
     </div>
     <?php
         if(isset($errorMsg)){
     ?>
         <div class="alert alert-danger">
-        <strong>Wrong! <?php echo $errorMsg; ?></strong>
+        <strong>เกิดข้อผิดพลาด! <?php echo $errorMsg; ?></strong>
         </div>
     <?php } ?>
 
@@ -74,83 +76,87 @@
         if(isset($insertMsg)){
     ?>
         <div class="alert alert-success">
-        <strong>success <?php echo $insertMsg; ?></strong>
+        <strong>ดำเนินการเสร็จสิ้น <?php echo $insertMsg; ?></strong>
         </div>
     <?php } ?>
 
     <form method="post" class="form-horizontal mt-5">
             <div class="form- text-center">
                 <div class="row">
-                <label for="firstname" class="col-sm-3 control-label">Firstname</label>
+                <label for="firstname" class="col-sm-3 control-label">ชื่อ</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_firstname" class="form-control" placeholder="Enter Firstname...">
+                    <input type="text" name="txt_firstname" class="form-control" placeholder="ชื่อ">
                 </div>
                 </div>
             </div>
 
             <div class="form- text-center">
                 <div class="row">
-                <label for="lastname" class="col-sm-3 control-label">Lastname</label>
+                <label for="lastname" class="col-sm-3 control-label">นามสกุล</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_lastname" class="form-control" placeholder="Enter Lastname...">
+                    <input type="text" name="txt_lastname" class="form-control" placeholder="นามสกุล">
                 </div>
                 </div>
             </div>
 
             <div class="form- text-center">
                 <div class="row">
-                <label for="username" class="col-sm-3 control-label">username</label>
+                <label for="username" class="col-sm-3 control-label">ชื่อบัญชีผู้ใช้</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_username" class="form-control" placeholder="Enter Username...">
+                    <input type="text" name="txt_username" class="form-control" placeholder="ชื่อบัญชีผู้ใช้">
                 </div>
                 </div>
             </div>
 
             <div class="form- text-center">
                 <div class="row">
-                <label for="password" class="col-sm-3 control-label">password</label>
+                <label for="password" class="col-sm-3 control-label">รหัสผ่าน</label>
                 <div class="col-sm-6">
-                    <input type="password" name="txt_password" class="form-control" placeholder="Enter Password...">
+                    <input type="password" name="txt_password" class="form-control" placeholder="รหัสผ่าน">
                 </div>
                 </div>
             </div>
 
             <div class="form- text-center">
                 <div class="row">
-                <label for="email" class="col-sm-3 control-label">Email</label>
+                <label for="email" class="col-sm-3 control-label">อีเมลล์</label>
                 <div class="col-sm-6">
-                    <input type="text" name="txt_email" class="form-control" placeholder="Enter Email...">
+                    <input type="text" name="txt_email" class="form-control" placeholder="อีเมลล์">
                 </div>
                 </div>
             </div>
-
+            <?php
+                $query = "SELECT * FROM user_role ORDER BY user_role_id asc" or die("Error:" . mysqli_error());
+                $result = mysqli_query($conn, $query);
+            ?>
             <div class="form- text-center">
-            <div class="row">
-            <label for="type" class="col-sm-3 control-label">Select Type</label>
-            <div class="col-sm-6">
-                <select name="txt_role" class="form-control">
-                <option value="" selected="selected">- ระบุตำแหน่ง -</option>
-                    <option value="1">ผู้ดูแลระบบ</option>
-                    <option value="2">ผู้อำนวยการ</option>
-                    <option value="3">รองผู้อำนวยการ ฝ่ายวิชาการ</option>
-                    <option value="4">ฝ่ายวิชาการ</option>
-                    <option value="5">ครู</option>
+                <div class="row">
+                <label for="" class="col-sm-3 control-label">บทบาท</label>
+                <div class="col-sm-6">
+                <select name="txt_role" class="form-control" required>
+                    <option value="">-ระบุตำแหน่ง-</option>
+                     <?php foreach($result as $results){
+                        if($results['status'] == 'Active'){?>
+                    <option value="<?php echo $results["user_role_id"];?>">
+                        <?php echo $results["name_role"]; ?>
+                    </option>
+                    <?php }else {
+                        # code...
+                    } ?>
+                    <?php } ?>
                 </select>
             </div>
-            </div>
-        </div>
 
         
 
-
             <div class="form-group text-center">
-                <div class="col-sm-offset-3 col-sm-9 mt-5">
-                    <input type="submit" name="btn_insert" class="btn btn-success" value="Insert">
-                    <a href="index.php" class="btn btn-danger">Cancel</a>
+                <div class="col-sm-offset-3 col-sm-9 mt-6">
+                    <input type="submit" name="btn_insert" class="btn btn-success" value="ยืนยัน">
+                    <a href="index.php" class="btn btn-danger">ยกเลิก</a>
                 </div>
             </div>
     </form>
-
+            </div>
     
 
 

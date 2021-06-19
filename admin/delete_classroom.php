@@ -2,16 +2,16 @@
 
 session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
+if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
     header("location: ../index.php");
 }
 
-    require_once('connection.php');
+    require_once('../connection.php');
 
     if(isset($_REQUEST['delete_id'])){
         try{
             $id = $_REQUEST['delete_id'];
-            $select_stmt = $db->prepare("SELECT * FROM classroom_user WHERE id = :id");
+            $select_stmt = $db->prepare("SELECT * FROM classroom WHERE class_id = :id");
             $select_stmt->bindParam(':id', $id);
             $select_stmt->execute();
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
@@ -21,10 +21,10 @@ if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก�
             }
     }
 
-    $update_stmt = $db->prepare("UPDATE classroom_user SET status  = 'Inactive' WHERE id = :id");
+    $update_stmt = $db->prepare("UPDATE classroom SET status  = 'Inactive' WHERE class_id = :id");
     $update_stmt->bindParam(':id', $id);
     if($update_stmt->execute()){
         $updateMeg = "Record update successfully...";
-        header("refresh:2,classroom.php");
+        header("refresh:1,classroom.php");
     }
 ?>

@@ -2,7 +2,7 @@
 
 session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-if (!isset($_SESSION['academicdepartment_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
+if ($_SESSION['login_type'] != 4) {//คำสั่งต้องloginก่อนถึงเข้าได้
     header("location: ../index.php");
 }
 
@@ -11,7 +11,7 @@ if (!isset($_SESSION['academicdepartment_login'])) {//คำสั่งต้�
     if(isset($_REQUEST['confirm_id'])){
         try{
             $id = $_REQUEST['confirm_id'];
-            $select_stmt = $db->prepare("SELECT * FROM prepare_hours WHERE id_prepare = :id");
+            $select_stmt = $db->prepare("SELECT * FROM prepare_to_teach WHERE id_prepare = :id");
             $select_stmt->bindParam(':id', $id);
             $select_stmt->execute();
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
@@ -21,7 +21,7 @@ if (!isset($_SESSION['academicdepartment_login'])) {//คำสั่งต้�
             }
     }
 
-    $update_stmt = $db->prepare("UPDATE prepare_hours SET status_prepare_hours  = '2' WHERE id_prepare = :id");
+    $update_stmt = $db->prepare("UPDATE prepare_to_teach SET status_prepare_hours  = 'Complete' WHERE id_prepare = :id");
     $update_stmt->bindParam(':id', $id);
     if($update_stmt->execute()){
         $updateMeg = "Record update successfully...";
