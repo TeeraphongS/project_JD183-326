@@ -1,11 +1,11 @@
 
 <?php
     session_start();
-    if (!isset($_SESSION['username'])){
-      header("location: index.php");
+    if (!isset($_SESSION['user_login'])){
+      header("location: ../index.php");
     }
     date_default_timezone_set('Asia/Bangkok');
-    include("connect.php");
+    include("../connection.php");
     //กำหนดเวลาที่สามารถอยู่ในระบบ
     /*$sessionlifetime = 600; //กำหนดเป็นนาที
     
@@ -59,11 +59,11 @@
         </div>
       </div>
     </div>
-        <?php $query = "SELECT * FROM user WHERE username = '".$_SESSION['username']."'";
+        <?php $query = "SELECT * FROM login_information WHERE username = '".$_SESSION['user_login']."'";
               $result = mysqli_query($conn, $query) or die ("Error in sql: $query" . mysqli_error($query));
         ?>
         <?php while ($row = mysqli_fetch_array($result)){//if (isset($_SESSION['username'])) : ?>
-                <h3 align="center">สวัสดีคุณ : <?php echo $row['name']; ?> &nbsp;  <?php echo $row['lastname']; ?></h3>   
+                <h3 align="center">สวัสดีคุณ : <?php echo $row['fname']; ?> &nbsp;  <?php echo $row['lname']; ?></h3>   
         <?php }?><?php?><br>
                 <h5 align="center">
         <?php $today = date('Y-m-d'); 

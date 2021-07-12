@@ -1,23 +1,29 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
         header("location: ../index.php");
     }
 
     require_once('../connection.php');
+    
 
     if(isset($_REQUEST['update_id'])){
-        try{
-            $id = $_REQUEST['update_id'];
+        //2. query ข้อมูลจากตาราง:
+        $id = $_REQUEST['update_id'];
+
+        $sql = "SELECT * FROM  login_information as login, user_role as role WHERE login.master_id = '".$id."' AND login.user_role_id = role.user_role_id ";
+        $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+        $row = mysqli_fetch_array($result);
+        extract($row);
+            /*$id = $_REQUEST['update_id'];
             $select_stmt = $db->prepare("SELECT * FROM login_information as login, user_role as role WHERE login.master_id = '".$id."' AND login.user_role_id = role.user_role_id ");
             $select_stmt->bindParam(':id', $id);
             $select_stmt->execute();
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
             extract($row);
-        }catch(PDOException $e){
-            $e->getMessage();
-        }
+            */
+        
     }
     if(isset($_REQUEST['btn_update'])){
         $firstname_up = $_REQUEST['txt_firstname'];
@@ -27,8 +33,6 @@
         $email_up = $_REQUEST['txt_email'];
         $role_up = $_REQUEST['txt_role'];
         $status;
-        $id = $_REQUEST['update_id'];
-        
         
 
         if(empty($firstname_up)){
@@ -44,18 +48,24 @@
         }else if(empty($role_up)){
             $errorMsg = "กรุณาระบุบทบาท";
         }else{
-            try{
                 if(!isset($errorMsg))
-                    $update_stmt = $db->prepare("UPDATE login_information SET fname = '".$firstname_up."' ,lname = '".$lastname_up."',
+                    $sql = "UPDATE login_information SET fname = '".$firstname_up."' ,lname = '".$lastname_up."',
                     username = '".$username_up."', password = '".$password_up."',email= '".$email_up."', user_role_id = '".$role_up."' 
-                    WHERE master_id = '".$id."'");
+                    WHERE master_id = '".$id."'";
+                    $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+                    mysqli_close($conn); //ปิดการเชื่อมต่อ database 
 
-                    if($update_stmt->execute()){
-                        $updateMeg = "การอัพเดตข้อมูลดำเนินการเสร็จสิ้น";
-                        header("refresh:1,index.php");
-                    }
-            } catch(PDOException $e){
-                echo $e->getMessage();
+    if($result){
+        echo "<script type='text/javascript'>";
+        echo "alert('อัพเดตข้อมูลเสร็จสิ้น');";
+        echo "window.location = 'index.php'; ";
+        echo "</script>";
+        }
+        else{
+        echo "<script type='text/javascript'>";
+        echo "alert('เกิดข้อผิดพลาดกรุณาอัพเดตใหม่อีกครั้ง');";
+        echo "</script>";
+                
             }
         }
 
@@ -149,19 +159,20 @@
                     $query = ("SELECT * FROM user_role ");
                     $result =mysqli_query($conn,$query);
                      ?>
-                   <option value="<?php echo $name_role;?>" selected="selected"><?php echo $name_role;?></option>
-                    <?php foreach($result as $row){
-                        if($row['status']=='Active'){?>
+                     <option value="<?php echo $user_role_id; ?>"><?php echo $name_role; ?></option>
+                    <?php foreach($result as $row){?>
+                        <?php if($row['status_role']=='Active' && $row['user_role_id'] !== $user_role_id){?>
                            <option value="<?php echo $row["user_role_id"];?>">
                            <?php echo $row['name_role']; ?></option>
                     </option>
-                    <?php }?>
+                    <?php }else{?>
+                        
+                    <?php } ?>
                     <?php } ?>
                     </select>
                 </div>
                 </div>
             </div>
-             
         
 
 

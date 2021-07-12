@@ -1,43 +1,53 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
         header("location: ../index.php");
     }
 
     require_once('../connection.php');
 
     if(isset($_REQUEST['update_id'])){
-        try{
-            $id = $_REQUEST['update_id'];
+
+        $id = $_REQUEST['update_id'];
+
+        $sql = "SELECT * FROM  user_role WHERE user_role_id = '".$id."'";
+        $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+        $row = mysqli_fetch_array($result);
+        extract($row);
+        
+            /*$id = $_REQUEST['update_id'];
             $select_stmt = $db->prepare("SELECT * FROM user_role WHERE user_role_id = :id");
             $select_stmt->bindParam(':id', $id);
             $select_stmt->execute();
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
-            extract($row);
-        } catch(PDOException $e){
-            $e->getMessage();
-        }
+            extract($row);*/
+        
     }if(isset($_REQUEST['btn_update'])){//ตั้งตัวแปร up
         $name_role = $_REQUEST['txt_name_role'];
 
         if(empty($name_role)){
             $errorMsg = "กรุณากรอกชื่อบทบาท";
         }else{
-            try{
+            
                 if(!isset($errorMsg))
-                    $update_stmt = $db->prepare("UPDATE user_role SET  name_role = :name_role WHERE user_role_id = :id");
-                    $update_stmt->bindParam(':name_role', $name_role);
-                    $update_stmt->bindParam(':id', $id);
-
-                    if($update_stmt->execute()){
-                        $updateMeg = "บันทึกการอัพเดตเสร็จสิ้น";
-                        header("refresh:1,role_type.php");
-                    }
-            } catch(PDOException $e){
-                echo $e->getMessage();
-            }
+                $sql = "UPDATE user_role SET  name_role = '".$name_role."' WHERE user_role_id = '".$id."'";
+                $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+                mysqli_close($conn); //ปิดการเชื่อมต่อ database 
+            
         }
+        if($result){
+            echo "<script type='text/javascript'>";
+            echo "alert('อัพเดตข้อมูลเสร็จสิ้น');";
+            echo "window.location = 'role_type.php'; ";
+            echo "</script>";
+            }
+            else{
+            echo "<script type='text/javascript'>";
+            echo "alert('เกิดข้อผิดพลาดกรุณาอัพเดตใหม่อีกครั้ง');";
+            echo "</script>";
+                    
+                }
 
     }
 

@@ -20,14 +20,8 @@
 </head>
 <body>
     <form action="line-notify.php" method="post">
-        <input name="firstname" placeholder='First Name (required)' type='text'>
-        <br>
-        <input name="lastname" placeholder='Last Name (required)' type='text'>
-        <br>
-        <input name="email" placeholder='Email (required)' type='email'>
-        <br>
-        <input placeholder='Phone' name="phone" type='text'>
-        <br>
+        <input name="message" placeholder='Submit your message (required)' type='text>
+
         <input class='send' name="submit" type='submit' value='Send'>
     </form>
     

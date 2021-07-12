@@ -32,8 +32,7 @@ function sendlinemesg() {
     define('LINE_API',"https://notify-api.line.me/api/notify");
     //define('LINE_TOKEN',"AwdpAwmOgcBDD00CnulluEJTNBVkwmnOX1I8kbLeven");   test token
     //define('LINE_TOKEN', "UO1yducRKhwDFp9Oz6ime3wKKdxtIns7uA30JZbjpQ5");    test_2 token
-    //define('LINE_TOKEN', "xMYoABT35hNDVM1fxx6yQIxCyeJExKK0zagEyCtB5MZ");
-    define('LINE_TOKEN', "vGJHe699fNEahexYSdpOb5nsBH2RGChgaCIKYWAEe8Y");      //test_plainPHP token
+    define('LINE_TOKEN', "xMYoABT35hNDVM1fxx6yQIxCyeJExKK0zagEyCtB5MZ");
 
     function notify_message($message) {
         $queryData = array('message' => $message);

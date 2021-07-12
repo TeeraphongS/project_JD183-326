@@ -1,0 +1,17 @@
+body {
+	font-family: sarabun;
+	font-size: 18px;
+	font-weight: bold;
+}
+.table {
+    border-collapse: collapse;
+}
+
+.table1, .td, .th, .tr {
+    border: 1px solid black;
+}
+p {
+	font-family: sarabun;
+	font-size: 24px;
+	font-weight: bold;
+}

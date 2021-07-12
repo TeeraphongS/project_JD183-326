@@ -1,7 +1,7 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
         header("location: ../index.php");
     }
     require_once('../connection.php');
@@ -12,19 +12,27 @@
         if(empty($role)){
             $errorMsg = "กรุณากรอกชื่อบทบาท";
         }else {
-            try{
+            
                 if(!isset($errorMsg)){
-                    $insert_stmt = $db->prepare("INSERT INTO user_role(name_role) VALUE(:role) ");
-                    $insert_stmt->bindParam(":role", $role);
+                    $sql = "INSERT INTO user_role(name_role) VALUE('".$role."') ";
+                    $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+                    mysqli_close($conn);
 
-                    if($insert_stmt->execute()){
-                        $insertMsg = " เพิ่มข้อมูลบทบาทเสร็จสิ้น";
-                        header("refresh:2,role_type.php");
-                    }
+                    if($result){
+                        echo "<script>";
+                        echo "alert('สำเร็จ');";
+                        echo "window.location ='role_type.php'; ";
+                        $insertMsg = "เพิ่มข้อมูลของสมาชิกเสร็จสิ้น";
+                        echo "</script>";
+                        } else {
+                        
+                        echo "<script>";
+                        echo "alert('ล้มเหลว!');";
+                        echo "window.location ='role_type.php'; ";
+                        echo "</script>";
+                        }
                 }
-            } catch (PDOException $e){
-                echo $e->getMessage();
-            }
+            
         }
     }
 ?>
@@ -34,7 +42,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Role</title>
+    <title>หน้าเพิ่มข้อมูลบทบาท</title>
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
 </head>
 <body>

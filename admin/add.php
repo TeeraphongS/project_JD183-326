@@ -1,7 +1,7 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
         header("location: ../index.php");
     }
     require_once('../connection.php');
@@ -27,9 +27,26 @@
         }else if(empty($role)){
             $errorMsg = "กรุณาระบุบทบาท";
         }else {
-            try{
+            
                 if(!isset($errorMsg)){
-                    $insert_stmt = $db->prepare("INSERT INTO login_information(fname,lname,username,password,email,user_role_id) VALUE(:fname,:lname,:user,:pass,:email,:role) ");
+                    $sql ="INSERT INTO login_information(fname,lname,username,password,email,user_role_id)VALUES ('$firstname','$lastname','$username','$password','$email','$role')";
+                    $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+                    mysqli_close($conn);
+    
+                    if($result){
+                    echo "<script>";
+                    echo "alert('สำเร็จ');";
+                    echo "window.location ='index.php'; ";
+                    $insertMsg = "เพิ่มข้อมูลของสมาชิกเสร็จสิ้น";
+                    echo "</script>";
+                    } else {
+                    
+                    echo "<script>";
+                    echo "alert('ล้มเหลว!');";
+                    echo "window.location ='index.php'; ";
+                    echo "</script>";
+                    }
+                    /*$insert_stmt = $db->prepare("INSERT INTO login_information(fname,lname,username,password,email,user_role_id) VALUE(:fname,:lname,:user,:pass,:email,:role) ");
                     $insert_stmt->bindParam(":fname", $firstname);
                     $insert_stmt->bindParam(":lname", $lastname);
                     $insert_stmt->bindParam(":user", $username);
@@ -40,10 +57,14 @@
                     if($insert_stmt->execute()){
                         $insertMsg = "เพิ่มข้อมูลของสมาชิกเสร็จสิ้น";
                         header("refresh:1,index.php");
+                        
                     }
                 }
             } catch (PDOException $e){
                 echo $e->getMessage();
+            }
+            */
+                
             }
         }
     }
@@ -51,8 +72,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เพิ่มบุคลากร</title>
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
@@ -136,7 +156,7 @@
                 <select name="txt_role" class="form-control" required>
                     <option value="">-ระบุตำแหน่ง-</option>
                      <?php foreach($result as $results){
-                        if($results['status'] == 'Active'){?>
+                        if($results['status_role'] == 'Active'){?>
                     <option value="<?php echo $results["user_role_id"];?>">
                         <?php echo $results["name_role"]; ?>
                     </option>
@@ -165,6 +185,6 @@
     <script src="js/slime.js"></script>
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.js"></script>
-    
-</body>
+
+    </body>
 </html>

@@ -1,42 +1,53 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
         header("location: ../index.php");
     }
 
     require_once('../connection.php');
 
     if(isset($_REQUEST['update_id'])){
-        try{
-            $id = $_REQUEST['update_id'];
+        
+        $id = $_REQUEST['update_id'];
+
+        $sql = "SELECT * FROM  classroom as class , grade_level as grade WHERE  class.class_id = '".$id."' AND class.grade_id = grade.grade_id ";
+        $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+        $row = mysqli_fetch_array($result);
+        extract($row);
+            /*$id = $_REQUEST['update_id'];
             $select_stmt = $db->prepare("SELECT * FROM classroom WHERE class_id = :id");
             $select_stmt->bindParam(':id', $id);
             $select_stmt->execute();
             $row = $select_stmt->fetch(PDO::FETCH_ASSOC);
-            extract($row);
-        } catch(PDOException $e){
-            $e->getMessage();
-        }
+            extract($row);*/
+        
     }if(isset($_REQUEST['btn_update'])){//ตั้งตัวแปร up
+        $grade_level = $_REQUEST['txt_grade'];
         $name_classroom = $_REQUEST['txt_name_classroom'];
 
         if(empty($name_classroom)){
-            $errorMsg = "Please Enter Classroom";
+            $errorMsg = "กรุณากรอกชั้นเรียน";
         }else{
-            try{
+            
                 if(!isset($errorMsg))
-                    $update_stmt = $db->prepare("UPDATE classroom SET  name_classroom = :classroom WHERE class_id = :id");
-                    $update_stmt->bindParam(':classroom', $name_classroom);
-                    $update_stmt->bindParam(':id', $id);
+                $sql = "UPDATE classroom SET grade_id = '".$grade_level."', name_classroom = '".$name_classroom."' WHERE class_id = '".$id."' ";
+                $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+                    mysqli_close($conn); //ปิดการเชื่อมต่อ database
 
-                    if($update_stmt->execute()){
-                        $updateMeg = "บันทึกข้อมูลการอัพเดตเสร็จสิ้น";
-                        header("refresh:2,classroom.php");
-                    }
-            } catch(PDOException $e){
-                echo $e->getMessage();
-            }
+                    if($result){
+                        echo "<script type='text/javascript'>";
+                        echo "alert('อัพเดตข้อมูลเสร็จสิ้น');";
+                        echo "window.location = 'classroom.php'; ";
+                        echo "</script>";
+                        }
+                        else{
+                        echo "<script type='text/javascript'>";
+                        echo "alert('เกิดข้อผิดพลาดกรุณาอัพเดตใหม่อีกครั้ง');";
+                        echo "</script>";
+                                
+                            }
+            
         }
 
     }
@@ -74,6 +85,32 @@
     <?php } ?>
 
     <form method="post" class="form-horizontal mt-5">
+
+
+    <div class="form- text-center">
+                <div class="row">
+                <label for="name_classroom" class="col-sm-3 control-label">ระดับชั้น</label>
+                <div class="col-sm-6">
+                <select name="txt_grade" class="form-control" required>
+                    <?php
+                $query1 = "SELECT * FROM grade_level ";
+                $result1 = mysqli_query($conn, $query1);
+                    ?>
+                <option value="<?php echo $grade_id; ?>"><?php echo '('.$grade_level_user.')  '.$name_gradelevel; ?></option>
+                    <?php foreach($result1 as $results1){
+                        if( $results1["status_grade"] == 'Active' && $results1['grade_id'] !== $grade_id){?>
+                    
+                    <option value="<?php echo $results1["grade_id"];?>">
+                        <?php echo '('.$results1["grade_level_user"].')  '.$results1["name_gradelevel"]; ?>
+                    </option>
+                    <?php } ?>
+                    <?php } ?>
+                </select>
+                </div>
+                </div>
+            </div>
+            <br>
+
             <div class="form- text-center">
                 <div class="row">
                 <label for="name_classroom" class="col-sm-3 control-label">ชื่อชั้นเรียน</label>
