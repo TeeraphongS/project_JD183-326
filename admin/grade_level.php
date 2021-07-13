@@ -9,7 +9,7 @@
 
     require_once('../connection.php');
     
-    $query=mysqli_query($conn,"SELECT COUNT(grade_id) FROM grade_level");
+    $query=mysqli_query($conn,"SELECT id FROM grade_level");
                         $row = mysqli_fetch_row($query);
                     
                         $rows = $row[0];
@@ -37,10 +37,10 @@
                     
                         $limit = 'LIMIT ' .($pagenum - 1) * $page_rows .',' .$page_rows;
                     
-                        $sql = "SELECT * from  grade_level   ORDER BY grade_id DESC $limit";
+                        $sql = "SELECT * from  grade_level   ORDER BY id DESC $limit";
                         if(isset($_GET['search'])){ 
                             $search = $_GET['search'];
-                            $sql = "SELECT * from  grade_level WHERE  name_gradelevel LIKE '%" . $search . "%' ORDER BY grade_id DESC $limit ";
+                            $sql = "SELECT * from  grade_level WHERE  name_gradelevel LIKE '%" . $search . "%' ORDER BY id DESC $limit ";
                         }
                         $nquery=mysqli_query($conn,$sql);
                     

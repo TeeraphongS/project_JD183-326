@@ -326,14 +326,6 @@ ALTER TABLE `login_information`
   ADD KEY `user_role_id` (`user_role_id`);
 
 --
--- Indexes for table `subject`
---
-ALTER TABLE `subject`
-  ADD KEY `subject_id` (`subject_id`);
---
--- Indexes for table `user_role`
---
---
 -- Indexes for table `prepare_to_teach`
 --
 ALTER TABLE `prepare_to_teach`
@@ -345,6 +337,14 @@ ALTER TABLE `prepare_to_teach`
 --  ADD KEY `year` (`year_id`),
 --  ADD KEY `class_id` (`class_id`);
 
+--
+-- Indexes for table `subject`
+--
+ALTER TABLE `subject`
+  ADD KEY `subject_id` (`subject_id`);
+--
+-- Indexes for table `user_role`
+--
 ALTER TABLE `user_role`
   ADD PRIMARY KEY (`user_role_id`);
 
