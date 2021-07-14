@@ -134,7 +134,7 @@
                         <td><?php if($row["status_class"] == 'Active'){?>
                             <p class="active">ใช้งานได้</p>
                         <?php } elseif($row["status_class"] == 'Inactive'){?>
-                            <p class="inactive">ถูกระงับการใช้งานได้</p>
+                            <p class="inactive">ถูกระงับการใช้งาน</p>
                        <?php } ?></td>
                         <td><a href="edit_classroom.php?update_id=<?php echo $row['class_id']; ?>"
                                 class="btn btn-warning">แก้ไข</td>

@@ -136,7 +136,7 @@
                         <td><?php if($row["status_subject"] == 'Active'){?>
                             <p class="active">ใช้งานได้</p>
                         <?php } elseif($row["status_subject"] == 'Inactive'){?>
-                            <p class="inactive">ถูกระงับการใช้งานได้</p>
+                            <p class="inactive">ถูกระงับการใช้งาน</p>
                        <?php } ?></td>
                         <td><a href="edit_subject.php?update_id=<?php echo $row['subject_id']; ?>" class="btn btn-warning">แก้ไข</td>
                         <td><a href="delete_subject.php?delete_id=<?php echo $row['subject_id']; ?>" class="btn btn-danger"class="btn btn-danger" onclick="return confirm('คุณต้องการลบข้อมูลหรือไม่')">ลบข้อมูล</td>

@@ -175,7 +175,7 @@
                         <td><?php if($row1["status_master"] == 'Active'){?>
                             <p class="active">ใช้งานได้</p>
                             <?php } elseif($row1["status_master"] == 'Inactive'){?>
-                            <p class="inactive">ถูกระงับการใช้งานได้</p>
+                            <p class="inactive">ถูกระงับการใช้งาน</p>
                             <?php } ?>
                         </td>
                         <td><a href="edit.php?update_id=<?php echo $row1["master_id"]; ?>" class="btn btn-warning">แก้ไข

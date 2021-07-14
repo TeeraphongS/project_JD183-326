@@ -149,7 +149,7 @@
                         <td><?php if($row["status_role"] == 'Active'){?>
                             <p class="active">ใช้งานได้</p>
                         <?php } elseif($row["status_role"] == 'Inactive'){?>
-                            <p class="inactive">ถูกระงับการใช้งานได้</p>
+                            <p class="inactive">ถูกระงับการใช้งาน</p>
                        <?php } ?></td>
                         <td><a href="edit_role.php?update_id=<?php echo $row['user_role_id']; ?>"
                                 class="btn btn-warning">แก้ไข</td>

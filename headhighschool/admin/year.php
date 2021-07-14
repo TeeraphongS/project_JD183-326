@@ -171,7 +171,7 @@
                         <td><?php if($row1["status_year"] == 'Active'){?>
                             <p class="active">ใช้งานได้</p>
                             <?php } elseif($row1["status_year"] == 'Inactive'){?>
-                            <p class="inactive">ถูกระงับการใช้งานได้</p>
+                            <p class="inactive">ถูกระงับการใช้งาน</p>
                             <?php } ?>
                         </td>
                         <td><a href="edit_year.php?update_id=<?php echo $row1["year_id"]; ?>" class="btn btn-warning">แก้ไข

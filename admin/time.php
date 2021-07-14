@@ -162,7 +162,7 @@
                         <td><?php if($row1["status_time"] == 'Active'){?>
                             <p class="active">ใช้งานได้</p>
                             <?php } elseif($row1["status_time"] == 'Inactive'){?>
-                            <p class="inactive">ถูกระงับการใช้งานได้</p>
+                            <p class="inactive">ถูกระงับการใช้งาน</p>
                             <?php } ?>
                         </td>
                         <td><a href="edit_time.php?update_id=<?php echo $row1["time_id"]; ?>" class="btn btn-warning">แก้ไข
