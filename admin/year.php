@@ -10,10 +10,10 @@
                     $search = isset($_GET['search']) ? $_GET['search']:' ';
 
                     //query
-                    $sql1 ="SELECT COUNT(year_id) from  year";
+                    $sql1 ="SELECT COUNT(year_id) from  time";
                     /*if(isset($_GET['search'])){ 
                         $search = $_GET['search'];
-                        $sql1 = "SELECT COUNT(year_id) from  year ";
+                        $sql1 = "SELECT COUNT(year_id) from  time ";
                         $strKeyword = $_GET['search'];// รับค่า search
                     }*/
 
@@ -47,7 +47,7 @@
                     
                     $limit = 'LIMIT ' .($pagenum - 1) * $page_rows .',' .$page_rows;
                     
-                    $sql = "SELECT * from  year   ORDER BY year_id DESC $limit";
+                    $sql = "SELECT * from  time   ORDER BY year_id DESC $limit";
                     /*if(isset($_GET['search'])){ 
                         $search = $_GET['search'];
                         $sql = "SELECT * from  login_information as login,user_role as role WHERE   login.user_role_id = role.user_role_id   AND fname LIKE '%" . $search . "%' ORDER BY master_id DESC $limit ";
@@ -171,7 +171,7 @@
                         <td><?php if($row1["status_year"] == 'Active'){?>
                             <p class="active">ใช้งานได้</p>
                             <?php } elseif($row1["status_year"] == 'Inactive'){?>
-                            <p class="inactive">ถูกระงับการใช้งานได้</p>
+                            <p class="inactive">ถูกระงับการใช้งาน</p>
                             <?php } ?>
                         </td>
                         <td><a href="edit_year.php?update_id=<?php echo $row1["year_id"]; ?>" class="btn btn-warning">แก้ไข
