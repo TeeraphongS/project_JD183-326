@@ -3,6 +3,18 @@
     session_start();
     require_once('../connection.php');
 
+    if(!isset($_SESSION['login_type'])){
+        $_SESSION['login_type'] = 0;
+        http_response_code(404);
+        //header("location: ../index.php");
+        return;
+    }
+    if($_SESSION['login_type'] === 0){
+        http_response_code(404);
+        //header("location: ../index.php");
+        return;
+    }
+
     $client_id = 'wpUIRBGGA6B7RaRF02BrON';
     $api_url = 'https://notify-bot.line.me/oauth/authorize?';
     $callback_url = 'http://localhost/TTPS/notification/line-notify-upd_auth.php';
