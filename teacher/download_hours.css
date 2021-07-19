@@ -1,0 +1,28 @@
+table {
+border-collapse: collapse;
+width: 100%;
+}
+
+td, th {
+border: 1px solid #dddddd;
+text-align: left;
+padding: 8px;
+
+}
+ 
+tr:nth-child(even) {
+background-color: #dddddd;
+}
+
+.col-sm-6{
+font-family: sarabun;
+font-size: 18px;
+padding-top: 30px;
+padding-left: 30px;
+padding-bottom: 30px;
+}
+body {
+font-family: sarabun;
+font-size: 24px;
+font-weight: bold;
+}

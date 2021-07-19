@@ -5,7 +5,7 @@ body {font-family: "Saraban", sans-serif;}
   width: 160px;
   position: fixed;
   z-index: 1;
-  top: 0;
+  top: 1;
   left: 0;
   background-color: rgb(0, 0, 0);
   overflow-x: hidden;

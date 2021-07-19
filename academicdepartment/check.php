@@ -1,9 +1,75 @@
 <?php
+session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    require_once('../connection.php');
-    date_default_timezone_set('Asia/Bangkok');
-    
+if (!isset($_SESSION['academicdepartment_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    header("location: ../index.php");
+}
+  
+require_once('../connection.php');
+date_default_timezone_set('Asia/Bangkok');
+
+$query=mysqli_query($conn,"SELECT COUNT(id_prepare) FROM prepare_to_teach");
+$row = mysqli_fetch_row($query);
+
+$rows = $row[0];
+
+$page_rows = 10;  //จำนวนข้อมูลที่ต้องการให้แสดงใน 1 หน้า  ตย. 5 record / หน้า 
+
+$last = ceil($rows/$page_rows);
+
+if($last < 1){
+    $last = 1;
+}
+
+$pagenum = 1;
+
+if(isset($_GET['pn'])){
+    $pagenum = preg_replace('#[^0-9]#', '', $_GET['pn']);
+}
+
+if ($pagenum < 1) {
+    $pagenum = 1;
+}
+else if ($pagenum > $last) {
+    $pagenum = $last;
+}
+
+$limit = 'LIMIT ' .($pagenum - 1) * $page_rows .',' .$page_rows;
+
+$nquery=mysqli_query($conn,"SELECT * from  prepare_to_teach ORDER BY id_prepare DESC $limit");
+
+$paginationCtrls = '';
+
+if($last != 1){
+
+    if ($pagenum > 1) {
+$previous = $pagenum - 1;
+        $paginationCtrls .= '<a href="'.$_SERVER['PHP_SELF'].'?pn='.$previous.'" class="btn btn-info">ย้อนกลับ</a> &nbsp; &nbsp; ';
+
+        for($i = $pagenum-4; $i < $pagenum; $i++){
+            if($i > 0){
+        $paginationCtrls .= '<a href="'.$_SERVER['PHP_SELF'].'?pn='.$i.'" class="btn btn-primary">'.$i.'</a> &nbsp; ';
+            }
+    }
+}
+
+    $paginationCtrls .= ''.$pagenum.' &nbsp; ';
+
+    for($i = $pagenum+1; $i <= $last; $i++){
+        $paginationCtrls .= '<a href="'.$_SERVER['PHP_SELF'].'?pn='.$i.'" class="btn btn-primary">'.$i.'</a> &nbsp; ';
+        if($i >= $pagenum+4){
+            break;
+        }
+    }
+
+if ($pagenum != $last) {
+$next = $pagenum + 1;
+$paginationCtrls .= ' &nbsp; &nbsp; <a href="'.$_SERVER['PHP_SELF'].'?pn='.$next.'" class="btn btn-info">ถัดไป</a> ';
+}
+    }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,30 +89,25 @@
     <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>View</th>
-                <th>Download</th>
-                <th>Confirm</th>
-                <th>Inconfirm</th>
-                <th>Status</th>
+                <th>วัน/เดือน/ปี</th>
+                <th>ดาวน์โหลด</th>
+                <th>อนุมัติให้ผ่าน</th>
+                <th>ไม่อนุมัติให้ผ่าน</th>
+                <th>สถานะการส่ง</th>
             </tr>
         </thead>
         <tbody>
             <?php
-                $select_stmt = $db->prepare("SELECT  * FROM prepare_to_teach");
-                $select_stmt->execute();
 
-                while($row = $select_stmt->fetch(PDO::FETCH_ASSOC)){
+                while($row =  mysqli_fetch_array($nquery)){
                 ?>  
                         
                        <?php $row["date_prepare"]; ?>
                     <tr>
-                        <td><?php echo date('Y-m-d ',strtotime($row["date_prepare"])) ?></td>
-                        <td><a href="view_hours.php?view_id=<?php echo $row['id_prepare']; ?>" class="btn btn-primary">View</td>
-                        <td><a href="download_hours.php?download_id=<?php echo $row["id_prepare"]; ?>" class="btn btn-dark">Download</a></td>
-                        <td><a href="confirm.php?confirm_id=<?php echo $row['id_prepare']; ?>" class="btn btn-success" 
-                        onclick="return confirm('คุณต้องการยืนยันข้อมูลนี้หรือไม่');">Confirm</td>
-                        <td><a href="inconfirm.php?inconfirm_id=<?php echo $row['id_prepare'] ; ?>" class="btn btn-danger" onclick="return confirm('คุณต้องการส่งกลับข้อมูลนี้หรือไม่')">Inconfirm</td>
+                        <td><?php echo $row['date_prepare'] ?></td>
+                        <td><a target ="_blank" href="download_hours.php?download_id=<?php echo $row["id_prepare"]; ?>" class="btn btn-dark">ดาวน์โหลด</a></td>
+                        <td><a href="confirm.php?confirm_id=<?php echo $row['id_prepare']; ?>" class="btn btn-success" onclick="return confirm('คุณต้องการยืนยันข้อมูลนี้หรือไม่')">อนุมัติให้ผ่าน</td>
+                        <td><a href="inconfirm.php?inconfirm_id=<?php echo $row['id_prepare'] ; ?>" class="btn btn-danger" onclick="return confirm('คุณต้องการส่งกลับข้อมูลนี้หรือไม่')">ไม่อนุมัติให้ผ่าน</td>
                         <td><?php if($row['status_prepare_hours']=='Checking'){
                              echo 'รอการตรวจสอบการส่ง';
                              }elseif($row['status_prepare_hours'] == 'Incomplete'){

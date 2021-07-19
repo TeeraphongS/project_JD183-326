@@ -1,7 +1,7 @@
 <?php 
     session_start();
 
-    if ($_SESSION['login_type'] != 4) {
+    if (!isset($_SESSION['academicdepartment_login'])) {
         header("location: ../index.php");
     }
 
@@ -37,10 +37,9 @@
             <hr>
                 
             <h3>
-                <?php if(isset($_SESSION['user_login'])) { ?>
-                Welcome, <?php echo $_SESSION['user_login']; }?>
+                <?php if(isset($_SESSION['academicdepartment_login'])) { ?>
+                Welcome, <?php echo $_SESSION['User']; }?>
             </h3>
-            <a href="../logout.php" class="btn btn-danger">Logout</a>
 
         </div>
     </div>

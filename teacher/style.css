@@ -1,0 +1,79 @@
+.sidebar {
+    height: 100%;
+    width: 180px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    /*background-color: rgb(0, 0, 0);*/
+   /* overflow-x: hidden; */ /*ปิดไปก่อน*/
+    padding-top: 16px;
+}
+.main {
+    margin-left: 160px; /* Same as the width of the sidenav */
+    padding : 0px 10px;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html, body {
+    height: 100%;
+  
+}
+.sidebar nav {
+    width: 180px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 5px 7px 10px pgba(0, 0, 0, .5);
+  
+}
+.sidebar nav ul{
+    position: relative;
+    list-style-type: none;
+}
+.sidebar nav ul li a {
+    display: flex;
+    align-items: center;
+    font-family: saraban;
+    font-size: 1.15em;
+    text-decoration: none;
+    text-transform: capitalize;
+    color: #000;
+    padding: 10px 30px;
+    height: 50px;
+    transition:  .5s ease;
+    border-radius: 0 30px;
+}
+.sidebar nav ul li a:hover {/*น่าจะสีตัวอักษร*/
+    background: rgba(0, 0, 0, 0.7);/*ยังไม่ได้ชี้เป็นสีดำ สี box*/
+    color: #fff;/*ชี้แล้วสีขาว*/
+}
+
+.sidebar nav ul ul {/*น่าจะสี Box 2*/
+    position: absolute;
+    left: 180px;
+    width: 180px;
+    top: 0;
+    display: none;
+    background: rgba(10, 10, 10, 0.4);
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px pgba(0, 0, 0, 1);
+}
+.sidebar nav ul span {
+    position: absolute;
+    right: 20px;
+    font-size: 1.5em;
+}
+.sidebar nav ul .dropdown {
+    position: relative;
+}
+.sidebar nav ul .dropdown:hover ul {
+    display: initial;
+}
+
+  

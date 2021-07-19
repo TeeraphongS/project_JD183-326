@@ -1,30 +1,39 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
         header("location: ../index.php");
     }
     require_once('../connection.php');
 
     if(isset($_REQUEST['btn_insert'])){
         $name_gradelevel = $_REQUEST['txt_gradelevel'];
+        $grade_level_user = $_REQUEST['txt_grade_level_user'];
 
         if(empty($name_gradelevel)){
             $errorMsg = "กรุณากรอกชื่อระดับชั้น";
         }else {
-            try{
+            
                 if(!isset($errorMsg)){
-                    $insert_stmt = $db->prepare("INSERT INTO grade_level(name_gradelevel) VALUE(:gradelevel) ");
-                    $insert_stmt->bindParam(":gradelevel", $name_gradelevel);
+                    $sql = "INSERT INTO grade_level(grade_level_user, name_gradelevel) VALUE('".$grade_level_user."', '".$name_gradelevel."') ";
+                    $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+                    mysqli_close($conn);
 
-                    if($insert_stmt->execute()){
-                        $insertMsg = "เพิ่มข้อมูลของระดับชั้นเสร็จสิ้น";
-                        header("refresh:1,grade_level.php");
-                    }
+                    if($result){
+                        echo "<script>";
+                        echo "alert('สำเร็จ');";
+                        echo "window.location ='grade_level.php'; ";
+                        $insertMsg = "เพิ่มข้อมูลของสมาชิกเสร็จสิ้น";
+                        echo "</script>";
+                        } else {
+                        
+                        echo "<script>";
+                        echo "alert('ล้มเหลว!');";
+                        echo "window.location ='grade_level.php'; ";
+                        echo "</script>";
+                        }
                 }
-            } catch (PDOException $e){
-                echo $e->getMessage();
-            }
+            
         }
     }
 ?>
@@ -60,6 +69,17 @@
     <?php } ?>
 
     <form method="post" class="form-horizontal mt-5">
+
+    <div class="form- text-center">
+                <div class="row">
+                <label for="txt_grade_level_user" class="col-sm-3 control-label">ชื่อระดับการศึกษา</label>
+                <div class="col-sm-6">
+                    <input type="text" name="txt_grade_level_user" class="form-control" placeholder="ชื่อระดับการศึกษา...">
+                </div>
+                </div>
+            </div>
+
+            
             <div class="form- text-center">
                 <div class="row">
                 <label for="name_gradelevel" class="col-sm-3 control-label">ชื่อระดับชั้น</label>

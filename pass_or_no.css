@@ -1,0 +1,46 @@
+
+    .status_nopass {
+        background: red;
+        color: #fff;
+        border-radius: 30px;
+        transition: all 0 ease;
+        text-align: center;
+    }
+    .status {
+        background:black;
+        color: #fff;
+        border-radius: 30px;
+        transition: all 0 ease;
+        text-align: center;
+    }
+    
+    .status_pass {
+        background: green;
+        color: #fff;
+        border-radius: 30px;
+        transition: all 0 ease;
+        text-align: center;
+    }
+    .active {
+        background: #79ff4d;
+        color: #fff;
+        border-radius: 30px;
+        transition: all 0 ease;
+        text-align: center;
+    }
+    .inactive {
+        background: red;
+        color: #fff;
+        border-radius: 30px;
+        transition: all 0 ease;
+        text-align: center;
+    }
+    a.btn btn-warning{
+        text-align: center;
+    }
+    a.btn btn-danger{
+        text-align: center;
+    }
+    a.btn btn-info{
+        text-align: center;
+    }

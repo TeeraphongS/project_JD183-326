@@ -1,7 +1,7 @@
 <?php
     session_start();//คำสั่งต้องloginก่อนถึงเข้าได้
 
-    if ($_SESSION['login_type'] != 1) {//คำสั่งต้องloginก่อนถึงเข้าได้
+    if (!isset($_SESSION['admin_login'])) {//คำสั่งต้องloginก่อนถึงเข้าได้
         header("location: ../index.php");
     }
     require_once('../connection.php');
@@ -13,20 +13,27 @@
         if(empty($name_classroom)){
             $errorMsg = "กรุณากรอกข้อมูลชื่อชั้นเรียน";
         }else{
-            try{
+            
                 if(!isset($errorMsg)){
-                    $insert_stmt = $db->prepare("INSERT INTO classroom(grade_id, name_classroom) VALUE(:grade, :class) ");
-                    $insert_stmt->bindParam(":grade", $grade_level);
-                    $insert_stmt->bindParam(":class", $name_classroom);
+                    $sql = "INSERT INTO classroom(grade_id, name_classroom) VALUE('".$grade_level."', '".$name_classroom."') ";
+                    $result = mysqli_query($conn, $sql) or die ("Error in query: $sql " . mysqli_error());
+                    mysqli_close($conn);
 
-                    if($insert_stmt->execute()){
-                        $insertMsg = "เพิ่มข้อมูลชั้นเรียนเสร็จสิ้น";
-                        header("refresh:1,classroom.php");
-                    }
+                    if($result){
+                        echo "<script>";
+                        echo "alert('สำเร็จ');";
+                        echo "window.location ='classroom.php'; ";
+                        $insertMsg = "เพิ่มข้อมูลของสมาชิกเสร็จสิ้น";
+                        echo "</script>";
+                        } else {
+                        
+                        echo "<script>";
+                        echo "alert('ล้มเหลว!');";
+                        echo "window.location ='classroom.php'; ";
+                        echo "</script>";
+                        }
                 }
-            } catch (PDOException $e){
-                echo $e->getMessage();
-            }
+            
         }
     }
 ?>
@@ -70,15 +77,15 @@
                 <div class="col-sm-6">
                 <select name="txt_grade" class="form-control" required>
                     <?php
-                $query = "SELECT * FROM grade_level ";
-                $result = mysqli_query($conn, $query);
+                $query1 = "SELECT * FROM grade_level ";
+                $result1 = mysqli_query($conn, $query1);
                     ?>
                 <option value="">-ระบุระดับชั้นเรียน-</option>
-                    <?php foreach($result as $results){
-                        if($results["grade_id"] = $results["grade_id"] AND $results["status"] == 'Active'){?>
+                    <?php foreach($result1 as $results1){
+                        if( $results1["status_grade"] == 'Active'){?>
                     
-                    <option value="<?php echo $results["grade_id"];?>">
-                        <?php echo $results["name_gradelevel"]; ?>
+                    <option value="<?php echo $results1["grade_id"];?>">
+                        <?php echo '('.$results1["grade_level_user"].')  '.$results1["name_gradelevel"]; ?>
                     </option>
                     <?php } ?>
                     <?php } ?>
@@ -86,6 +93,7 @@
                 </div>
                 </div>
             </div>
+            <br>
 
             <div class="form- text-center">
                 <div class="row">
